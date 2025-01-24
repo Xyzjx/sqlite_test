@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <script src="./assets/js/dist/sql-wasm.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+    config = {
+        // 这里请求自己目录下面的.dist/sql-wasm.wasm
+        locateFile: file => `./assets/js/dist/${file}`
+    };
+    initSqlJs(config).then(function(SQL) {
+        // 加载现有的SQLite数据库文件
+        fetch('db/mlnlp.sqlite')
+            .then(response => response.arrayBuffer())
+            .then(buffer => {
+                const db = new SQL.Database(new Uint8Array(buffer));
+                // 执行SQL查询
+                const res = db.exec("SELECT * FROM activity where id = 1");
+                console.log(res);
+            });
+    });
+
+</script>
+</body>
+</html>
